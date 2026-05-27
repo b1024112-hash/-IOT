@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ブイ水温モニタ</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    background:#eef7ff;
+    text-align:center;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin:auto;
+    max-width:350px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.value{
+    font-size:2em;
+    margin:15px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>🌊 ブイ観測</h1>
+
+    <div class="value" id="water">🌡 水温 -- ℃</div>
+    <div class="value" id="air">☀ 気温 -- ℃</div>
+    <div class="value" id="battery">🔋 電圧 -- V</div>
+
+    <p id="time">更新時刻 --</p>
+</div>
+
+<script>
+
+const url =
+"https://api.buoy.jp/buoy/wagri-dev.php?BUOY=101a731";
+
+async function loadData(){
+
+    const res = await fetch(url);
+    const text = await res.text();
+
+    // 最終行取得
+    const lines = text.trim().split("\n");
+    const latest = lines[lines.length - 1];
+
+    const cols = latest.split(",");
+
+    const utc = cols[1];
+    const battery = cols[2];
+    const air = cols[3];
+    const water = cols[4];
+
+    // UTC → JST
+    const date = new Date(utc);
+
+    document.getElementById("water").innerHTML =
+        `🌡 水温 ${water} ℃`;
+
+    document.getElementById("air").innerHTML =
+        `☀ 気温 ${air} ℃`;
+
+    document.getElementById("battery").innerHTML =
+        `🔋 電圧 ${battery} V`;
+
+    document.getElementById("time").innerHTML =
+        `更新: ${date.toLocaleString("ja-JP")}`;
+}
+
+// 初回
+loadData();
+
+// 30分ごと更新
+setInterval(loadData, 1800000);
+
+</script>
+
+</body>
+</html>
