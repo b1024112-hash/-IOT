@@ -51,31 +51,29 @@ async function loadData(){
     const res = await fetch(url);
     const text = await res.text();
 
-    // 最終行取得
     const lines = text.trim().split("\n");
     const latest = lines[lines.length - 1];
 
     const cols = latest.split(",");
 
-    const utc = cols[1];
     const battery = cols[2];
     const air = cols[3];
     const water = cols[4];
+    const utc = cols[1];
 
-    // UTC → JST
     const date = new Date(utc);
 
     document.getElementById("water").innerHTML =
-        `🌡 水温 ${water} ℃`;
+    `🌡 水温 ${water} ℃`;
 
     document.getElementById("air").innerHTML =
-        `☀ 気温 ${air} ℃`;
+    `☀ 気温 ${air} ℃`;
 
     document.getElementById("battery").innerHTML =
-        `🔋 電圧 ${battery} V`;
+    `🔋 電圧 ${battery} V`;
 
     document.getElementById("time").innerHTML =
-        `更新: ${date.toLocaleString("ja-JP")}`;
+    `更新: ${date.toLocaleString("ja-JP")}`;
 }
 
 // 初回
