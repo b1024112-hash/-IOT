@@ -46,16 +46,19 @@ body{
 
 const url = "data.txt";
 
-async function loadData(){
+<script>
+
+async function loadData() {
 
     const res = await fetch("data.txt");
     const text = await res.text();
 
-    // 改行整理
-    const clean = text.replace(/\r/g, "").trim();
+    // 行分割
+    const lines = text
+        .trim()
+        .split(/\r?\n/);
 
-    // 最後のデータ行取得
-    const lines = clean.split("\n");
+    // 最後の有効行
     const latest = lines[lines.length - 1];
 
     console.log(latest);
@@ -65,26 +68,36 @@ async function loadData(){
 
     console.log(cols);
 
+    // 必要データ
     const utc = cols[1];
     const battery = cols[2];
     const air = cols[3];
     const water = cols[4];
 
-    // UTC → JST
+    // JST変換
     const date = new Date(utc);
 
-    document.getElementById("water").innerHTML =
+    // 表示
+    document.getElementById("water").textContent =
         `🌡 水温 ${water} ℃`;
 
-    document.getElementById("air").innerHTML =
+    document.getElementById("air").textContent =
         `☀ 気温 ${air} ℃`;
 
-    document.getElementById("battery").innerHTML =
+    document.getElementById("battery").textContent =
         `🔋 電圧 ${battery} V`;
 
-    document.getElementById("time").innerHTML =
+    document.getElementById("time").textContent =
         `更新: ${date.toLocaleString("ja-JP")}`;
 }
+
+// 初回実行
+loadData();
+
+// 30分ごと更新
+setInterval(loadData, 1800000);
+
+</script>
 
 // 初回
 loadData();
