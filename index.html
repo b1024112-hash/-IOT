@@ -44,40 +44,26 @@ body{
 
 <script>
 
-const url = "data.txt";
-
-<script>
-
 async function loadData() {
 
     const res = await fetch("data.txt");
     const text = await res.text();
 
-    // 行分割
     const lines = text
         .trim()
         .split(/\r?\n/);
 
-    // 最後の有効行
     const latest = lines[lines.length - 1];
 
-    console.log(latest);
-
-    // CSV分割
     const cols = latest.split(",");
 
-    console.log(cols);
-
-    // 必要データ
     const utc = cols[1];
     const battery = cols[2];
     const air = cols[3];
     const water = cols[4];
 
-    // JST変換
     const date = new Date(utc);
 
-    // 表示
     document.getElementById("water").textContent =
         `🌡 水温 ${water} ℃`;
 
@@ -92,14 +78,6 @@ async function loadData() {
 }
 
 // 初回実行
-loadData();
-
-// 30分ごと更新
-setInterval(loadData, 1800000);
-
-</script>
-
-// 初回
 loadData();
 
 // 30分ごと更新
